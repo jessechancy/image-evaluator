@@ -1,7 +1,7 @@
 import ast
 
 #write filename of return from huaying instagram crawler
-file = "test1.txt"
+file = "Data/test1.txt"
 
 ## Reading File
 
@@ -43,21 +43,29 @@ def datetime_format(input_datetime):
     day = input_datetime[8:10]
     return year, month, day
 
-#processes files
+#processes a txt data of influencer information
 #returns total posts and ignored posts count
-def preprocess_file(file_name):
-    content = read_file(file_name)
-    total_count = len(content)
+def preprocess(result_dict):
+    influencers = result_dict
+    user_filtered = dict()
     ignored_count = 0
-    for post in content:
-        #filters out videos and multi photos
-        if video_filter(post) or multi_photo_filter(post):
-            ignored_count += 1
-            continue
-        likes = post['likes']
-        img_url = post['img_urls'][0]
-        year, month, day = datetime_format(post['datetime'])
-        
-        """do something with this information"""
-        
-    return total_count, ignored_count
+    total_count = 0
+    #loops through every user
+    for user in influencers:
+        user_content = []
+        content = influencers[user]
+        total_count += len(content)
+        for post in content:
+            user_post = dict()
+            #filters out videos and multi photos
+            if video_filter(post) or multi_photo_filter(post):
+                ignored_count += 1
+                continue
+            user_post['likes'] = post['likes']
+            user_post['img_url'] = post['img_urls'][0]
+            year, month, day = datetime_format(post['datetime'])
+            # in YYYYMMDD format
+            user_post['date'] = year+month+day
+            user_content.append(user_post)
+        user_filtered[user] = user_content
+    return total_count, ignored_count, user_filtered
