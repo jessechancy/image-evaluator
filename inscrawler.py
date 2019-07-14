@@ -122,7 +122,8 @@ def main_inscrawler(who='/beyonce'):
     def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
-            if response.status_code == 429:
+            if response.status_code != 200:
+                print(response)
                 print("Waiting....")
                 time.sleep(wait)
             else:
