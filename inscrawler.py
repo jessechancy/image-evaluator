@@ -8,6 +8,7 @@ from datetime import datetime
 from queue import Queue, Empty
 from threading import Thread
 import os
+import time
 
 ## Crawler
 
@@ -115,8 +116,17 @@ def main_inscrawler(who='/beyonce'):
                 retries = retries + 1
                 print(retries)
                 continue
-
-
+    
+    def retry(session, next, attempts=10, wait=500):
+        for i in range(attempts):
+            response = session.get(next)
+            if response.status_code == 429:
+                print("Waiting....")
+                time.sleep(wait)
+            else:
+                return response
+        return "failed"
+        
     session = requests.Session()
     # session.headers = { 'user-agent': CHROME_UA }
     r = session.get(url+who)
@@ -128,7 +138,9 @@ def main_inscrawler(who='/beyonce'):
     while next is not '':
         count += 1
         print(count)
-        response = session.get(next)
+        response = retry(session, next, 10, 500)
+        if response == "failed":
+            break
         pics_url_list, pics_name_list = get_image_links(response)
         url_list.extend(pics_url_list)
         name_list.extend(pics_name_list)
@@ -141,12 +153,13 @@ def main_inscrawler(who='/beyonce'):
 users = ["selenagomez", "cristiano", "beyonce", "leomessi"]
 
 def generate_folders():
+    #add this when you have hard disk connected
     os.chdir("/Volumes/My Passport")
     path = "Influencers"
     for name in users:
         path_name = path + "/" + name
         try:
-            os.mkdir(path_name)
+            os.makedirs(path_name)
         except:
             print(path_name + " already made!")
 
