@@ -154,7 +154,7 @@ users = ["selenagomez", "cristiano", "beyonce", "leomessi"]
 
 def generate_folders():
     #add this when you have hard disk connected
-    os.chdir("/Volumes/My Passport")
+    #os.chdir("/Volumes/My Passport")
     path = "Influencers"
     for name in users:
         path_name = path + "/" + name
