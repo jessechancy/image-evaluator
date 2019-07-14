@@ -102,8 +102,8 @@ def main_inscrawler(who='/beyonce'):
         return pics_url_list, pics_name_list
     
     
-    def download_images(url_list, name_list):
-        os.chdir("/Volumes/My Passport")
+    def download_images(url_list, name_list, user):
+        #os.chdir("/Volumes/My Passport")
         folder_path = "Influencers" + "/" + user
         retries = 0
         for i, url in enumerate(url_list):
@@ -112,12 +112,14 @@ def main_inscrawler(who='/beyonce'):
             #'./b2/'+str(i)+'-'+name_list[i]
             try:
                 urllib.request.urlretrieve(url, path)
-            except:
+            except Exception as e:
+                print(e)
+                print("rate limited!")
                 retries = retries + 1
-                print(retries)
+                print("Retries:", retries)
                 continue
     
-    def retry(session, next, attempts=10, wait=500):
+    def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
             if response.status_code == 429:
@@ -138,7 +140,7 @@ def main_inscrawler(who='/beyonce'):
     while next is not '':
         count += 1
         print(count)
-        response = retry(session, next, 10, 500)
+        response = retry(session, next, 10, 600)
         if response == "failed":
             break
         pics_url_list, pics_name_list = get_image_links(response)
@@ -146,7 +148,7 @@ def main_inscrawler(who='/beyonce'):
         name_list.extend(pics_name_list)
         next = coba_lagi(response, False)
     print(len(url_list))
-    download_images(url_list, name_list)
+    download_images(url_list, name_list, who)
 
 ## Crawler Threading
 
@@ -154,7 +156,7 @@ users = ["selenagomez", "cristiano", "beyonce", "leomessi"]
 
 def generate_folders():
     #add this when you have hard disk connected
-    os.chdir("/Volumes/My Passport")
+    #os.chdir("/Volumes/My Passport")
     path = "Influencers"
     for name in users:
         path_name = path + "/" + name
@@ -174,10 +176,12 @@ def threaded_crawler():
     def crawl_wrapper(q):
         while not q.empty():
             user = q.get()
-            try: 
+            try:
                 result = main_inscrawler(user)
                 results[user] = result
-            except:
+            
+            except Exception as e:
+                print(e)
                 print("user " + user + " failed")
             q.task_done()
         return True
