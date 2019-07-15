@@ -24,14 +24,14 @@ def main_inscrawler(who='/beyonce'):
                 rhx_gis,
                 variables)
         x_instagram_gis = hashlib.md5(values.encode()).hexdigest()
-    
+
         session = requests.Session()
         session.headers = {
                 'x-instagram-gis': x_instagram_gis
                 }
-    
+
         return session
-    
+
     def coba_lagi(r, first):
         nonlocal session, url
         has_next = False
@@ -64,7 +64,7 @@ def main_inscrawler(who='/beyonce'):
         encoded_vars = urllib.parse.quote(variables)
         next_url = 'https://www.instagram.com/graphql/query/?query_hash=%s&variables=%s' % (query['hash'], encoded_vars)
         return next_url
-    
+
     first_url_list = []
     first_name_list = []
     def get_first_image_links(node_dict):
@@ -81,9 +81,9 @@ def main_inscrawler(who='/beyonce'):
                 # print(datetime.fromtimestamp(date))
                 name = str(num_likes)+'-'+str(num_comments)+'-'+str(date)+'.jpg'
                 first_name_list.append(name)
-    
+
     def get_image_links(r):
-        print(r)
+        # print(r)
         data = json.loads(r.text)
         pics_url_list = []
         pics_name_list = []
@@ -100,8 +100,8 @@ def main_inscrawler(who='/beyonce'):
                 name = str(num_likes)+'-'+str(num_comments)+'-'+str(date)+'.jpg'
                 pics_name_list.append(name)
         return pics_url_list, pics_name_list
-    
-    
+
+
     def download_images(url_list, name_list, user):
         #os.chdir("/Volumes/My Passport")
         folder_path = "Influencers" + "/" + user
@@ -118,7 +118,7 @@ def main_inscrawler(who='/beyonce'):
                 retries = retries + 1
                 print("Retries:", retries)
                 continue
-    
+
     def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
@@ -127,20 +127,21 @@ def main_inscrawler(who='/beyonce'):
                 print("Waiting....")
                 time.sleep(wait)
             else:
+                print("Continuing")
                 return response
         return "failed"
-        
+
     session = requests.Session()
     # session.headers = { 'user-agent': CHROME_UA }
     r = session.get(url+who)
     next = coba_lagi(r, True)
     url_list.extend(first_url_list)
     name_list.extend(first_name_list)
-    
-    count = 0
+
+    # count = 0
     while next is not '':
-        count += 1
-        print(count)
+        # count += 1
+        # print(count)
         response = retry(session, next, 10, 600)
         if response == "failed":
             break
@@ -153,7 +154,7 @@ def main_inscrawler(who='/beyonce'):
 
 ## Crawler Threading
 
-users = ["selenagomez", "cristiano", "beyonce", "leomessi"]
+users = ["virat.kohli", "jlo", "neymarjr"]
 
 def generate_folders():
     #add this when you have hard disk connected
@@ -180,16 +181,17 @@ def threaded_crawler():
             try:
                 result = main_inscrawler(user)
                 results[user] = result
-            
+
             except Exception as e:
                 print(e)
                 print("user " + user + " failed")
             q.task_done()
         return True
-    
+
     for i in range(num_threads):
         print("starting thread " + str(i))
         process = Thread(target=crawl_wrapper, args=[q])
         process.start()
     q.join()
     return results
+# threaded_crawler()
