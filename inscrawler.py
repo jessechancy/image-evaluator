@@ -106,10 +106,17 @@ def main_inscrawler(who='/beyonce'):
         #os.chdir("/Volumes/My Passport")
         folder_path = "Influencers" + "/" + user
         retries = 0
+        user_data = dict()
+        user_data[user] = []
         for i, url in enumerate(url_list):
             if retries > 10:return
             path = folder_path + "/" + str(i) + '-' + name_list[i]
             #'./b2/'+str(i)+'-'+name_list[i]
+            img_data = dict()
+            img_data["id"] = str(i)
+            img_data["url"] = url
+            img_data["info"] = name_list[i]
+            user_data[user].append(img_data)
             try:
                 urllib.request.urlretrieve(url, path)
             except Exception as e:
@@ -118,7 +125,9 @@ def main_inscrawler(who='/beyonce'):
                 retries = retries + 1
                 print("Retries:", retries)
                 continue
-
+        with open(folder_path+'data.txt', 'w+') as outfile:  
+            json.dump(user_data, outfile)
+        
     def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
@@ -159,9 +168,9 @@ users = [
          "daquan", "iambeckyg",
          "nickyjampr",
          "lilyjcollins"]
+#failed: shakira, nickiminaj, 
 
-
-users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", natgeo"]
+users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
 
 users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
          "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
