@@ -152,8 +152,31 @@ def main_inscrawler(who='/beyonce'):
     download_images(url_list, name_list, who)
 
 ## Crawler Threading
+#starts at liam payne
+users = [
+         "chiaraferragni", "tataweneck", "jairmessiasbolsonaro",
+         "daquan", "iambeckyg",
+         "nickyjampr",
+         "lilyjcollins"]
 
-users = ["selenagomez", "cristiano", "beyonce", "leomessi"]
+users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", natgeo"]
+
+users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
+         "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
+         "milliebobbybrown", "chrishemsworth", "ladygaga", "colesprouse",
+         "aliaabhatt", "k.mbappe", "sooyaaa__", "lilireinhart", "brunamarquezine",
+         "real__pcy", "maluma", "danbilzerian", "thenotoriousmma", "narendramodi",
+         "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
+         "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
+         "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
+         "ronaldinho", "akshaykumar", "jasonstatham", "travisscott", "caradelevingne",
+         "pewdiepie", "blackpinkofficial", "vancityreynolds", "karolg", 
+         "shraddhakapoor", "adele", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
+         "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
+         "baekhyunee_exo", "brunomars", "ncentineo", "willsmith", "bts.bighitofficial",
+         "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
+         "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
+         "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
 
 def generate_folders():
     #add this when you have hard disk connected
@@ -171,7 +194,7 @@ def threaded_crawler():
     results = dict()
     threads = []
     q = Queue()
-    num_threads = min(2, len(users))
+    num_threads = min(1, len(users))
     for i in range(len(users)):
         q.put(("/"+users[i]))
     def crawl_wrapper(q):
