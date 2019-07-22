@@ -180,16 +180,15 @@ users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "sh
          "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
          "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
          "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
-         "ronaldinho", "akshaykumar", "jasonstatham", "travisscott", "caradelevingne",
-         "pewdiepie", "karolg",
+         "ronaldinho", "akshaykumar", "karolg",
          "shraddhakapoor", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
          "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
          "baekhyunee_exo", "willsmith", "bts.bighitofficial",
          "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
          "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
          "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
-# print(users[45:49], users[49])
-users = users[41:]
+print(len(users[41:48]), users[41])
+# users = users[41:]
 
 def generate_folders():
     #add this when you have hard disk connected
@@ -229,4 +228,4 @@ def threaded_crawler():
         process.start()
     q.join()
     return results
-threaded_crawler()
+# threaded_crawler()
