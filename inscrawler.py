@@ -125,9 +125,9 @@ def main_inscrawler(who='/beyonce'):
                 retries = retries + 1
                 print("Retries:", retries)
                 continue
-        with open(folder_path+'data.txt', 'w+') as outfile:  
+        with open(folder_path+'data.txt', 'w+') as outfile:
             json.dump(user_data, outfile)
-        
+
     def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
@@ -168,7 +168,7 @@ users = [
          "daquan", "iambeckyg",
          "nickyjampr",
          "lilyjcollins"]
-#failed: shakira, nickiminaj, 
+#failed: shakira, nickiminaj,
 
 users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
 
@@ -181,13 +181,15 @@ users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "sh
          "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
          "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
          "ronaldinho", "akshaykumar", "jasonstatham", "travisscott", "caradelevingne",
-         "pewdiepie", "blackpinkofficial", "vancityreynolds", "karolg", 
-         "shraddhakapoor", "adele", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
+         "pewdiepie", "karolg",
+         "shraddhakapoor", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
          "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
-         "baekhyunee_exo", "brunomars", "ncentineo", "willsmith", "bts.bighitofficial",
+         "baekhyunee_exo", "willsmith", "bts.bighitofficial",
          "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
          "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
          "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
+# print(users[45:49], users[49])
+users = users[41:]
 
 def generate_folders():
     #add this when you have hard disk connected
@@ -205,7 +207,7 @@ def threaded_crawler():
     results = dict()
     threads = []
     q = Queue()
-    num_threads = min(1, len(users))
+    num_threads = min(2, len(users))
     for i in range(len(users)):
         q.put(("/"+users[i]))
     def crawl_wrapper(q):
@@ -227,4 +229,4 @@ def threaded_crawler():
         process.start()
     q.join()
     return results
-# threaded_crawler()
+threaded_crawler()
