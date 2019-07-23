@@ -10,6 +10,35 @@ from threading import Thread
 import os
 import time
 
+## Define variables
+#starts at liam payne
+users = [
+         "chiaraferragni", "tataweneck", "jairmessiasbolsonaro",
+         "daquan", "iambeckyg",
+         "nickyjampr",
+         "lilyjcollins"]
+#failed: shakira, nickiminaj,
+
+users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
+
+users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
+         "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
+         "milliebobbybrown", "chrishemsworth", "ladygaga", "colesprouse",
+         "aliaabhatt", "k.mbappe", "sooyaaa__", "lilireinhart", "brunamarquezine",
+         "real__pcy", "maluma", "danbilzerian", "thenotoriousmma", "narendramodi",
+         "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
+         "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
+         "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
+         "ronaldinho", "akshaykumar", "karolg",
+         "shraddhakapoor", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
+         "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
+         "baekhyunee_exo", "willsmith", "bts.bighitofficial",
+         "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
+         "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
+         "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
+print(len(users[41:48]), users[41])
+# users = users[41:]
+
 ## Crawler
 
 def main_inscrawler(who='/beyonce'):
@@ -162,33 +191,6 @@ def main_inscrawler(who='/beyonce'):
     download_images(url_list, name_list, who)
 
 ## Crawler Threading
-#starts at liam payne
-users = [
-         "chiaraferragni", "tataweneck", "jairmessiasbolsonaro",
-         "daquan", "iambeckyg",
-         "nickyjampr",
-         "lilyjcollins"]
-#failed: shakira, nickiminaj,
-
-users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
-
-users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
-         "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
-         "milliebobbybrown", "chrishemsworth", "ladygaga", "colesprouse",
-         "aliaabhatt", "k.mbappe", "sooyaaa__", "lilireinhart", "brunamarquezine",
-         "real__pcy", "maluma", "danbilzerian", "thenotoriousmma", "narendramodi",
-         "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
-         "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
-         "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
-         "ronaldinho", "akshaykumar", "karolg",
-         "shraddhakapoor", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
-         "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
-         "baekhyunee_exo", "willsmith", "bts.bighitofficial",
-         "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
-         "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
-         "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
-print(len(users[41:48]), users[41])
-# users = users[41:]
 
 def generate_folders():
     #add this when you have hard disk connected

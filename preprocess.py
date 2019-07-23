@@ -5,6 +5,7 @@ from PIL import Image
 
 IMG_SIZE = 224
 DATADIR = "./Influencers/"
+
 ## Resize Images and use grey background
 def process_img(pic):
     global IMG_SIZE
