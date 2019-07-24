@@ -10,35 +10,6 @@ from threading import Thread
 import os
 import time
 
-## Define variables
-#starts at liam payne
-users = [
-         "chiaraferragni", "tataweneck", "jairmessiasbolsonaro",
-         "daquan", "iambeckyg",
-         "nickyjampr",
-         "lilyjcollins"]
-#failed: shakira, nickiminaj,
-
-users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
-
-users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
-         "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
-         "milliebobbybrown", "chrishemsworth", "ladygaga", "colesprouse",
-         "aliaabhatt", "k.mbappe", "sooyaaa__", "lilireinhart", "brunamarquezine",
-         "real__pcy", "maluma", "danbilzerian", "thenotoriousmma", "narendramodi",
-         "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
-         "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
-         "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
-         "ronaldinho", "akshaykumar", "karolg",
-         "shraddhakapoor", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
-         "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
-         "baekhyunee_exo", "willsmith", "bts.bighitofficial",
-         "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
-         "anushkasharma", "eljuanpazurita", "dishaptani", "bretmanrock", "nehakakkar",
-         "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
-print(len(users[41:48]), users[41])
-# users = users[41:]
-
 ## Crawler
 
 def main_inscrawler(who='/beyonce'):
@@ -154,9 +125,9 @@ def main_inscrawler(who='/beyonce'):
                 retries = retries + 1
                 print("Retries:", retries)
                 continue
-        with open(folder_path+'data.txt', 'w+') as outfile:
+        with open(folder_path+'data.txt', 'w+') as outfile:  
             json.dump(user_data, outfile)
-
+        
     def retry(session, next, attempts=10, wait=600):
         for i in range(attempts):
             response = session.get(next)
@@ -165,7 +136,7 @@ def main_inscrawler(who='/beyonce'):
                 print("Waiting....")
                 time.sleep(wait)
             else:
-                print("Continuing")
+                #print("Continuing")
                 return response
         return "failed"
 
@@ -176,10 +147,10 @@ def main_inscrawler(who='/beyonce'):
     url_list.extend(first_url_list)
     name_list.extend(first_name_list)
 
-    # count = 0
+    count = 0
     while next is not '':
-        # count += 1
-        # print(count)
+        count += 1
+        print(count)
         response = retry(session, next, 10, 600)
         if response == "failed":
             break
@@ -191,7 +162,35 @@ def main_inscrawler(who='/beyonce'):
     download_images(url_list, name_list, who)
 
 ## Crawler Threading
+#starts at liam payne
+users = [
+         "chiaraferragni", "tataweneck", "jairmessiasbolsonaro",
+         "daquan", "iambeckyg",
+         "nickyjampr",
+         "lilyjcollins"]
+#failed: nickiminaj, 
 
+users = ["instagram", "fcbarcelona", "nasa", "nike", "realmadrid", "natgeo"]
+
+users = ["nickiminaj", "mosalah", "gigihadid", "davidbeckham", "camimendes", "shakira",
+         "priyankachopra", "zacefron", "paulodybala", "roses_are_rosie",
+         "milliebobbybrown", "chrishemsworth", "ladygaga", "colesprouse",
+         "aliaabhatt", "k.mbappe", "sooyaaa__", "lilireinhart", "brunamarquezine",
+         "real__pcy", "maluma", "danbilzerian", "thenotoriousmma", "narendramodi",
+         "hazardeden_10", "marcelotwelve", "vindiesel", "lizakoshy", "jamescharles",
+         "madelame", "justintimberlake", "paulpogba", "cohsehun", "kevinhart4real",
+         "sophiet", "mileycyrus", "dualipa", "beingsalmankhan", "garethbale11",
+         "ronaldinho", "akshaykumar", "jasonstatham", "travisscott", "caradelevingne",
+         "pewdiepie", "blackpinkofficial", "vancityreynolds", "karolg", 
+         "shraddhakapoor", "adele", "iamzlatanibrahimovic", "katrinakaif", "sergioramos",
+         "eminem", "stephencurry30", "katyperry", "gal_gadot", "emrata",
+         "baekhyunee_exo", "brunomars", "ncentineo", "willsmith", "bts.bighitofficial",
+         "brentrivera", "jacquelinef143", "lilpump", "amandacerny", "maeriliamendoncaca",
+         "anushkasharma", "eljuanpazurita", "dishapatani", "bretmanrock", "nehakakkar",
+         "luissuarez9", "iamsrk", "prattprattpratt", "ranveersingh", "shahidkapoor"]
+
+users = ["kevinhart4real", "nickiminaj"]
+users = ["natgeo"]
 def generate_folders():
     #add this when you have hard disk connected
     #os.chdir("/Volumes/My Passport")
@@ -208,7 +207,7 @@ def threaded_crawler():
     results = dict()
     threads = []
     q = Queue()
-    num_threads = min(2, len(users))
+    num_threads = min(1, len(users))
     for i in range(len(users)):
         q.put(("/"+users[i]))
     def crawl_wrapper(q):
