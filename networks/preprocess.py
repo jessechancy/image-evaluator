@@ -60,7 +60,6 @@ def get_processed_img():
                     img = Image.open(DATA_DIR + influencer + "/" + img_filename).convert('RGB')
                     #processed = process_img(img)
                     processed = img
-                    print(processed, type(processed))
                     img_list.append((processed, img_filename))
                 except:
                     err_count += 1
@@ -155,7 +154,6 @@ def import_images():
     processed_result = assign_class()
     for score_class in processed_result:
         for post in processed_result[score_class]:
-            print("Second Check: ", type(post))
             result.append([post, score_class])
     random.shuffle(result)
     return result
