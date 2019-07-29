@@ -21,7 +21,7 @@ from Instaset import InstaSet
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
 parser.add_argument("-l", "--learning", help="change learning rate", default=0.01)
-parser.add_argument("-f", "--filepath", help="data filepath", default="./Data/")
+parser.add_argument("-f", "--filepath", type=str, default="./Data/", help="data filepath")
 
 args = parser.parse_args()
 
@@ -33,6 +33,10 @@ DATASET_DIR = args.filepath
 
 learning_rate = args.learning
 pretrain_model = args.pretrained
+
+print("Learning Rate: ", learning_rate)
+print("Pretrain: ", pretrain_model)
+print("Dataset Directory: ", DATASET_DIR)
 
 ## GPU Setting
 
