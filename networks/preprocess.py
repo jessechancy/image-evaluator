@@ -7,7 +7,7 @@ import os
 import datetime
 import pandas as pd
 import random
-
+import time
 from queue import Queue, Empty
 from threading import Thread
 
@@ -25,6 +25,7 @@ def threaded(fn):
     job = Thread(target=wrap, args=(queue,) + args,
                  kwargs=kwargs)
     job.start()
+    job.join()
     return queue
 
   return call
@@ -33,7 +34,7 @@ def threaded(fn):
 
 IMG_SIZE = 224
 #os.chdir("/Volumes/My Passport")
-DATA_DIR = "/home/angelica/external4/top-100/"
+DATA_DIR = "./Influencers/"
 INFLUENCERS = os.listdir(DATA_DIR)
 if ".DS_Store" in INFLUENCERS:
     INFLUENCERS.remove('.DS_Store')
@@ -79,7 +80,7 @@ def get_processed_img():
         influencer = INFLUENCERS[i]
         @threaded
         def get_processed_img_wrapper(influencer):
-            nonlocal err_count, result, count
+            nonlocal err_count, count
             img_list = []
             for img_filename in os.listdir(DATA_DIR + influencer):
                 if img_filename != ".DS_Store":
@@ -95,6 +96,7 @@ def get_processed_img():
                         err_count += 1
                         print("Error Count: " + str(err_count))
                         continue
+            print("Img List:", img_list)
             result[influencer] = img_list
         get_processed_img_wrapper(influencer)
     print("Error Count: " + str(err_count))
