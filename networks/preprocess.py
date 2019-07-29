@@ -59,7 +59,7 @@ def process_img(pic):
         pos = [0,2]
         resize_tuple = (IMG_SIZE, int(desired))
     dimension_list[pos[0]] = dim
-    if int(desired)+2(dim) != IMG_SIZE:
+    if int(desired+(2*dim)) != IMG_SIZE:
         dim = dim+1
     dimension_list[pos[1]] = dim
     resize_transform = transforms.Resize(resize_tuple)
@@ -67,7 +67,7 @@ def process_img(pic):
     to_tensor = transforms.ToTensor()
     transform = transforms.Compose([resize_transform, pad_transform, to_tensor])
     return transform(pic)
-    
+
 def get_processed_img():
     result = dict()
     err_count = 0
@@ -86,7 +86,7 @@ def get_processed_img():
                 if img_filename != ".DS_Store":
                     try:
                         img = Image.open(DATA_DIR + influencer + "/" + img_filename).convert('RGB')
-                        #processed = process_img(img)
+                        # processed = process_img(img)
                         processed = img
                         img_list.append((processed, img_filename))
                         count += 1
@@ -101,12 +101,12 @@ def get_processed_img():
         get_processed_img_wrapper(influencer)
     print("Error Count: " + str(err_count))
     return result
-    
+
     # Result is now a dict with format
     #{Influencer_1: [(pil_img_1, filename_1), (pil_img_2, filename_2)...], Influencer_2: ...}
 
 # # Test display
-# for pic in result: 
+# for pic in result:
 #     np_pic = np.array(pic[0])
 #     print(np_pic.shape)
 
@@ -116,7 +116,7 @@ def get_processed_img():
 def translate_datetime(time_stamp):
     date = datetime.datetime.fromtimestamp(int(time_stamp)).strftime('%Y-%m')
     return date
-    
+
 def get_dates_likes():
     result = dict()
     processed_result = get_processed_img()
@@ -153,7 +153,7 @@ def check_data_quality(result):
     avg_imgs_in_period = total/count
     print(avg_imgs_in_period, "images / time period")
     return avg_imgs_in_period
-    
+
 ## Assign a class (1-10) based on likes and dates
 
 def assign_class():
@@ -179,8 +179,8 @@ def assign_class():
                     elif low <= ratio < high:
                         result[score_class].append(img)
     return result
-    
-def import_images():
+
+def import_images(download=False):
     result = []
     for key in result:
         print(key, len(result[key]))
@@ -189,5 +189,43 @@ def import_images():
         for post in processed_result[score_class]:
             result.append([post, score_class])
     random.shuffle(result)
+    if download:
+        save_image(result)
+        return
     return result
 
+def save_image(result):
+    folder_path = "Dataset/"
+    split = int(len(result)*0.2)
+    val, train = result[:split], result[split:]
+    def save_to_folder(list, folder_path):
+        ctr = 0
+        for img in list:
+            try:
+                img[0].save(folder_path+str(img[1])+"/"+str(ctr)+".jpg")
+            except Exception as error:
+                print("Error with post", error)
+            ctr = ctr + 1
+    save_to_folder(train, folder_path+"train/")
+    save_to_folder(val, folder_path+"val/")
+
+
+def generate_folders():
+    #add this when you have hard disk connected
+    #os.chdir("/Volumes/My Passport")
+    path = "Dataset"
+    def generate_sub_folders(path):
+        for name in range(1,11):
+            path_name = path + "/" + str(name)
+            try:
+                os.makedirs(path_name)
+            except:
+                print(path_name + " already made!")
+    generate_sub_folders(path+"/train")
+    generate_sub_folders(path+"/val")
+
+def generate_dataset():
+    generate_folders()
+    import_images(True)
+
+generate_dataset()
