@@ -15,8 +15,6 @@ IMG_SIZE = 224
 
 def process_img(pic, mode):
     global IMG_SIZE
-    print(type(pic))
-    print("Done check")
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                     std=[0.229, 0.224, 0.225])
     if mode == "train":
@@ -54,7 +52,6 @@ class InstagramImageDataset(Dataset):
         if self.transforms is not None:
             img = self.transforms(self.images[idx][0], "train")
             score_class = torch.from_numpy(np.array([int(score_class)]))
-            print(score_class)
         return (img, score_class)
         
 def instagram_imgset():

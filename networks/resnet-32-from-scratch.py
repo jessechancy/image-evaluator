@@ -12,14 +12,11 @@ import matplotlib.pyplot as plt
 import time
 import os
 import copy
+from instagram_imageset import instagram_imgset
 
 ## Global
 
 use_gpu = False
-
-## Image Preprocessing
-
-class InstagramImageDataset()
 
 ## Just some copied code for preprocessing
 """
@@ -53,7 +50,7 @@ class_names = image_datasets['train'].classes
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def imshow(inp, title=None):
-    """Imshow for Tensor."""
+    "Imshow for Tensor.e"
     inp = inp.numpy().transpose((1, 2, 0))
     mean = np.array([0.485, 0.456, 0.406])
     std = np.array([0.229, 0.224, 0.225])
@@ -90,10 +87,11 @@ def imshow(inp, title=None):
 
 
 #result of image processing
-inputs = 
+inputs = 0
 #labels '1' to '10' based on likes
-labels = 
+labels = 0
 
+dataloaders, dataset_sizes = instagram_imgset()
 
 ## Training Model (Generic Function)
 
@@ -120,8 +118,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
-                inputs = inputs.to(device)
-                labels = labels.to(device)
+                # inputs = inputs.to(device)
+                # labels = labels.to(device)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -131,7 +129,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
-                    loss = criterion(outputs, labels)
+                    loss = criterion(outputs, torch.max(labels,1)[1])
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
