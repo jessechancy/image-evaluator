@@ -72,7 +72,7 @@ out = torchvision.utils.make_grid(inputs)
 imshow(out, title=[class_names[x] for x in classes])
 """
 ##
-device = torch.device("cuda:0,1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def imshow(inp, title=None):
     """Imshow for Tensor."""
@@ -97,7 +97,6 @@ dataloaders, dataset_sizes = instagram_imgset()
 ## Training Model (Generic Function)
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
-    torch.cuda.get_device_name(0)
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -132,7 +131,11 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                     outputs = model(inputs)
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, torch.max(labels,1)[1])
-
+                    if torch.cuda.device_count() > 1:
+                        print("Let's use", torch.cuda.device_count(), "GPUs!")
+                        # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
+                        model = nn.DataParallel(model)
+                    model.to(device)
                     # backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
@@ -216,7 +219,7 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
 
 #As a fixed feature extractor
 
-model_conv = torchvision.models.resnet34(pretrained=False)
+model_conv = torchvision.models.resnet34(pretrained=True)
 for param in model_conv.parameters():
     param.requires_grad = False
 
@@ -226,7 +229,7 @@ model_conv.fc = nn.Linear(num_ftrs, 10)
 
 model_conv = model_conv.to(device)
 
-criterion = nn.CrossEntropyLiss()
+criterion = nn.CrossEntropyLoss()
 
 # Observe that only parameters of final layer are being optimized as
 # opposed to before.
