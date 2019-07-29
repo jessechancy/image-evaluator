@@ -8,6 +8,29 @@ import datetime
 import pandas as pd
 import random
 
+from queue import Queue, Empty
+from threading import Thread
+
+
+
+##
+# Threaded function snippet
+
+def threaded(fn):
+  def wrap(queue, *args, **kwargs):
+    queue.put(fn(*args, **kwargs))
+
+  def call(*args, **kwargs):
+    queue = Queue()
+    job = Thread(target=wrap, args=(queue,) + args,
+                 kwargs=kwargs)
+    job.start()
+    return queue
+
+  return call
+
+##
+
 IMG_SIZE = 224
 #os.chdir("/Volumes/My Passport")
 DATA_DIR = "./Influencers/"
@@ -47,25 +70,33 @@ def process_img(pic):
 def get_processed_img():
     result = dict()
     err_count = 0
+    count = 0
     for i in range(len(INFLUENCERS)):
         # Transform all the images
         # result[influencer] = datasets.ImageFolder(DATA_DIR,
         #                                           transforms.Lambda(lambda img: process_img(img)))
         print("influencer " + str(i) + " of " + str(len(INFLUENCERS)))
         influencer = INFLUENCERS[i]
-        img_list = []
-        for img_filename in os.listdir(DATA_DIR + influencer):
-            if img_filename != ".DS_Store":
-                try:
-                    img = Image.open(DATA_DIR + influencer + "/" + img_filename).convert('RGB')
-                    #processed = process_img(img)
-                    processed = img
-                    img_list.append((processed, img_filename))
-                except:
-                    err_count += 1
-                    print("Error Count: " + str(err_count))
-                    continue
-        result[influencer] = img_list
+        @threaded
+        def get_processed_img_wrapper(influencer):
+            nonlocal err_count, result, count
+            img_list = []
+            for img_filename in os.listdir(DATA_DIR + influencer):
+                if img_filename != ".DS_Store":
+                    try:
+                        img = Image.open(DATA_DIR + influencer + "/" + img_filename).convert('RGB')
+                        #processed = process_img(img)
+                        processed = img
+                        img_list.append((processed, img_filename))
+                        count += 1
+                        print("Done Count:", count)
+                    except Exception as e:
+                        print(e)
+                        err_count += 1
+                        print("Error Count: " + str(err_count))
+                        continue
+            result[influencer] = img_list
+        get_processed_img_wrapper(influencer)
     print("Error Count: " + str(err_count))
     return result
     
@@ -157,3 +188,4 @@ def import_images():
             result.append([post, score_class])
     random.shuffle(result)
     return result
+
