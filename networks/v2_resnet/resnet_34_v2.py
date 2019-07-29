@@ -16,13 +16,23 @@ import subprocess
 
 from Instaset import InstaSet
 
+## Parse Arguments
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
+parser.add_argument("-l", "--learning", help="change learning rate", default=0.01)
+parser.add_argument("-f", "--filepath", help="data filepath", default="./Data/")
+
+args = parser.parse_args()
+
 ## File Directories
 
-DATASET_DIR = "./Data/"
+DATASET_DIR = args.filepath
 
 ## Hyper Parameters
 
-learning_rate = 0.01
+learning_rate = args.learning
+pretrain_model = args.pretrained
 
 ## GPU Setting
 
@@ -83,7 +93,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet34(pretrained=True)
+net = models.resnet34(pretrained=pretrain_model)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)

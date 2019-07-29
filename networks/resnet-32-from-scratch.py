@@ -219,7 +219,7 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
 
 #As a fixed feature extractor
 
-model_conv = torchvision.models.resnet34(pretrained=True)
+model_conv = torchvision.models.resnet34(pretrained=False)
 for param in model_conv.parameters():
     param.requires_grad = False
 
