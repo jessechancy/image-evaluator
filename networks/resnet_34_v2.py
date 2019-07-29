@@ -11,6 +11,8 @@ from torchvision import models, datasets
 
 import os
 import argparse
+import numpy as np
+import subprocess
 
 
 learning_rate = 0.01
