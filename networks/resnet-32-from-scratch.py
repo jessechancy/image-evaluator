@@ -13,7 +13,7 @@ import time
 import os
 import copy
 from instagram_imageset import instagram_imgset
-
+import subprocess
 ## Global
 
 use_gpu = False
