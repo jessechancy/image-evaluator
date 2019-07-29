@@ -33,7 +33,7 @@ def threaded(fn):
 
 IMG_SIZE = 224
 #os.chdir("/Volumes/My Passport")
-DATA_DIR = "./Influencers/"
+DATA_DIR = "/home/angelica/external4/top-100/"
 INFLUENCERS = os.listdir(DATA_DIR)
 if ".DS_Store" in INFLUENCERS:
     INFLUENCERS.remove('.DS_Store')
@@ -58,7 +58,7 @@ def process_img(pic):
         pos = [0,2]
         resize_tuple = (IMG_SIZE, int(desired))
     dimension_list[pos[0]] = dim
-    if desired%2 != 0:
+    if int(desired)+2(dim) != IMG_SIZE:
         dim = dim+1
     dimension_list[pos[1]] = dim
     resize_transform = transforms.Resize(resize_tuple)
