@@ -72,7 +72,7 @@ out = torchvision.utils.make_grid(inputs)
 imshow(out, title=[class_names[x] for x in classes])
 """
 ##
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0,1" if torch.cuda.is_available() else "cpu")
 
 def imshow(inp, title=None):
     """Imshow for Tensor."""

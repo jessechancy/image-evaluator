@@ -34,7 +34,7 @@ def threaded(fn):
 
 IMG_SIZE = 224
 #os.chdir("/Volumes/My Passport")
-DATA_DIR = "./Influencers/"
+DATA_DIR = "/home/angelica/external4/sample_dataset/"
 INFLUENCERS = os.listdir(DATA_DIR)
 if ".DS_Store" in INFLUENCERS:
     INFLUENCERS.remove('.DS_Store')
