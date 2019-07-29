@@ -18,6 +18,7 @@ from instagram_imageset import instagram_imgset
 
 use_gpu = False
 
+s.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in 1subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
 ## Just some copied code for preprocessing
 """
 # Data augmentation and normalization for training
