@@ -97,6 +97,7 @@ dataloaders, dataset_sizes = instagram_imgset()
 ## Training Model (Generic Function)
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
+    torch.cuda.get_device_name(0)
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -215,7 +216,7 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
 
 #As a fixed feature extractor
 
-model_conv = torchvision.models.resnet34(pretrained=True)
+model_conv = torchvision.models.resnet34(pretrained=False)
 for param in model_conv.parameters():
     param.requires_grad = False
 
@@ -225,7 +226,7 @@ model_conv.fc = nn.Linear(num_ftrs, 10)
 
 model_conv = model_conv.to(device)
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLiss()
 
 # Observe that only parameters of final layer are being optimized as
 # opposed to before.
