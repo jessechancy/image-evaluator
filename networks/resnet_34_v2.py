@@ -15,7 +15,9 @@ import argparse
 
 learning_rate = 0.01
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+os.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
+
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
@@ -55,7 +57,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet34(pretrained=False)
+net = models.resnet34(pretrained=True)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
