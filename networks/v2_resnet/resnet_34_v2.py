@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
 parser.add_argument("-l", "--learning", help="change learning rate", default=0.01)
 parser.add_argument("-f", "--filepath", type=str, default="./Data/", help="data filepath")
-
+parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
 args = parser.parse_args()
 
 ## File Directories
@@ -32,15 +32,17 @@ DATASET_DIR = args.filepath
 ## Hyper Parameters
 
 learning_rate = args.learning
+gpu = args.gpu
 pretrain_model = args.pretrained
 
 print("Learning Rate: ", learning_rate)
 print("Pretrain: ", pretrain_model)
 print("Dataset Directory: ", DATASET_DIR)
+print("GPU: ", gpu)
 
 ## GPU Setting
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:'+str(gpu) if torch.cuda.is_available() else 'cpu')
 
 if device.type == 'cuda':
     os.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
@@ -66,10 +68,10 @@ transform_val = transforms.Compose([
 ])
 ## Loads InstaSet
 train_set = InstaSet(DATASET_DIR, True, transform_train)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=0)
 
 val_set = InstaSet(DATASET_DIR, False, transform_val)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=False, num_workers=2)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=True, num_workers=0)
 
 ## Loads CIFAR10
 # train_set = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
