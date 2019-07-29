@@ -53,25 +53,23 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 # Data
 print('==> Preparing data..')
 transform_train = transforms.Compose([
-    transforms.Resize(256),
-    transforms.RandomCrop(32, padding=4),
+    transforms.RandomCrop(224, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
 transform_val = transforms.Compose([
-    transforms.Resize(256),
-    transforms.RandomCrop(32, padding=4),
+    transforms.RandomCrop(224, padding=4),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 ## Loads InstaSet
 train_set = InstaSet(DATASET_DIR, True, transform_train)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=0)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
 
 val_set = InstaSet(DATASET_DIR, False, transform_val)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=False, num_workers=0)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=False, num_workers=2)
 
 ## Loads CIFAR10
 # train_set = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
