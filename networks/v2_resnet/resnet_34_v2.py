@@ -97,7 +97,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet34(pretrained=pretrain_model)
+net = models.resnet18(pretrained=pretrain_model)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
