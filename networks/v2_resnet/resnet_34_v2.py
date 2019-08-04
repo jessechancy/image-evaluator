@@ -68,10 +68,10 @@ transform_val = transforms.Compose([
 ])
 ## Loads InstaSet
 train_set = InstaSet(DATASET_DIR, True, transform_train)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=0)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=32, shuffle=True, num_workers=0)
 
 val_set = InstaSet(DATASET_DIR, False, transform_val)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=True, num_workers=0)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=25, shuffle=True, num_workers=0)
 
 ## Loads CIFAR10
 # train_set = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
