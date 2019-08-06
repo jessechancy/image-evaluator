@@ -15,6 +15,7 @@ import numpy as np
 import subprocess
 
 from Instaset import InstaSet
+from resnet import Resnet
 
 ## Parse Arguments
 
@@ -31,6 +32,7 @@ DATASET_DIR = args.filepath
 
 ## Hyper Parameters
 
+BATCH_SIZE = 1
 learning_rate = args.learning
 gpu = args.gpu
 pretrain_model = args.pretrained
@@ -68,10 +70,21 @@ transform_val = transforms.Compose([
 ])
 ## Loads InstaSet
 train_set = InstaSet(DATASET_DIR, True, transform_train)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=1, shuffle=True, num_workers=0)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=BATCH_SIZE, 
+                                           shuffle=True, num_workers=0)
 
 val_set = InstaSet(DATASET_DIR, False, transform_val)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=1, shuffle=True, num_workers=0)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=BATCH_SIZE, 
+                                         shuffle=True, num_workers=0)
+
+#create a dataloader that gets one tensor based on index and the other randomly 
+#based on chosen month and user
+
+#our data should be arranged in user/month/img[title=likes]
+
+##
+
+#train_loader = [(tensor1, label1, tensor2, label2),(),(),(),()]
 
 ## Loads CIFAR10
 # train_set = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
@@ -80,8 +93,6 @@ val_loader = torch.utils.data.DataLoader(val_set, batch_size=1, shuffle=True, nu
 # val_set = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_val)
 # val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=False, num_workers=2)
 ##
-
-classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 # Model
 print('==> Building model..')
@@ -97,7 +108,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet18(pretrained=pretrain_model)
+net = Resnet(pretrained=pretrain_model)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
@@ -105,6 +116,10 @@ if device == 'cuda':
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
+
+class pairwiseloss():
+    pass
+    #output1/like count 1 - outpu2/like count2 + 1
 
 # Training
 def train(epoch):
@@ -115,11 +130,14 @@ def train(epoch):
     total = 0
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         inputs, targets = inputs.to(device), targets.to(device)
-        print("Inputs:", inputs.size())
         optimizer.zero_grad()
-        outputs = net(inputs)
-        print(outputs.size())
+        input1, input2 = inputs
+        output1 = net(input1)
+        output2 = net(inputs2)
+        outputs = [output1, output2]
+        #(like count1, like count2]
         loss = criterion(outputs, targets)
+        print(loss, loss.item())
         loss.backward()
         optimizer.step()
 
