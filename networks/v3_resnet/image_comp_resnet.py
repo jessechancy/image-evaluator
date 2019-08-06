@@ -15,14 +15,14 @@ import numpy as np
 import subprocess
 
 from Instaset import InstaSet
-from resnet import Resnet
+from models.resnet import ResNet18
 
 ## Parse Arguments
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
 parser.add_argument("-l", "--learning", help="change learning rate", default=0.01)
-parser.add_argument("-f", "--filepath", type=str, default="./Data/", help="data filepath")
+parser.add_argument("-f", "--filepath", type=str, default="./Dataset/", help="data filepath")
 parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
 args = parser.parse_args()
 
@@ -108,7 +108,8 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = Resnet(pretrained=pretrain_model)
+net = models.resnet18()
+net.fc = nn.Linear(512, 1)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
@@ -128,15 +129,17 @@ def train(epoch):
     train_loss = 0
     correct = 0
     total = 0
-    for batch_idx, (inputs, targets) in enumerate(train_loader):
-        inputs, targets = inputs.to(device), targets.to(device)
+    for batch_idx, (input1, target1, input2, target2) in enumerate(train_loader):
+        input1, target1, input2, target2 = input1.to(device), target1.to(device), input2.to(device), target2.to(device)
+        #inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
-        input1, input2 = inputs
+        print(input1.size(), input2.size())
         output1 = net(input1)
-        output2 = net(inputs2)
-        outputs = [output1, output2]
+        output2 = net(input2)
+        print(output1.size(), output2.size())
         #(like count1, like count2]
-        loss = criterion(outputs, targets)
+        ## Have to write the criterion function
+        loss = criterion(output, target)
         print(loss, loss.item())
         loss.backward()
         optimizer.step()

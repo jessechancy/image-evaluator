@@ -30,34 +30,10 @@ def import_images(root, train):
             img = Image.open(image_filepath).convert('RGB')
             samples.append((img, score_class))
     return samples
-    
-## Dataset Class
-
-class InstaSet(Dataset):
-    def __init__(self, root, train=True, transforms=None):
-        self.root = root
-        self.train = train
-        self.transforms = transforms
-        self.samples = import_images(root, train)
-    def __len__(self):
-        return len(self.samples)
-    def __getitem__(self, idx):
-        img, label =  self.samples[idx]
-        
-        if self.transforms is not None:
-            img = self.transforms(img)
-        label = torch.from_numpy(np.array(int(label)))
-        return (img, label)
 
 ## Pick Random Images
 
 picks = 150000
-
-def import_images(root, train):
-    samples = []
-    for i in range(picks):
-        samples.append(pick_images(root))
-    
 
 def pick_images(root, train):
     if train == True:
@@ -76,12 +52,8 @@ def pick_images(root, train):
         month_ind = random.randint(0, len(user_data)-1)
         month = user_data[month_ind]
         month_path = os.path.join(user_path, month)
-        if month_path in single:
-            continue
         month_data = os.listdir(month_path)
         month_data.remove("avg_likes.txt")
-        if len(month_data) <= 1:
-            single.add(month_path)
         try:
             img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
             flagged = True
@@ -98,13 +70,12 @@ def pick_images(root, train):
     # img2 = transforms(img2)
     label1 = label1.split("|")[1][:-4]
     label2 = label2.split("|")[1][:-4]
-    label1 = torch.from_numpy(np.array(int(label1)))
-    label2 = torch.from_numpy(np.array(int(label2)))
+    
     return (img1, label1, img2, label2)
     
 def test():
     count = 0
-    for i in range(10000):
+    for i in range(1000):
         try:
             pick_images(root, True)
         except:
@@ -120,13 +91,16 @@ class InstaSet(Dataset):
         self.root = root
         self.train = train
         self.transforms = transforms
-        self.samples = import_images(root, train)
+        
     def __len__(self):
-        return len(self.samples)
+        return picks
     def __getitem__(self, idx):
-        img, label =  self.samples[idx]
+        img1, label1, img2, label2 =  pick_images(self.root, self.train)
         
         if self.transforms is not None:
-            img = self.transforms(img)
-        label = torch.from_numpy(np.array(int(label)))
-        return (img, label)
+            img1 = self.transforms(img1)
+            img2 = self.transforms(img2)
+            
+        label1 = torch.from_numpy(np.array(int(label1)))
+        label2 = torch.from_numpy(np.array(int(label2)))
+        return (img1, label1, img2, label2)
