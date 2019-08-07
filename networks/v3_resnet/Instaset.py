@@ -1,7 +1,10 @@
 import os
 import random
 from PIL import Image
-
+import torch
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from PIL import Image
 import torch
 from torch.utils.data import Dataset
 import numpy as np
@@ -30,6 +33,36 @@ def import_images(root, train):
             img = Image.open(image_filepath).convert('RGB')
             samples.append((img, score_class))
     return samples
+
+## Processing
+IMG_SIZE = 224
+def process_img(pic):
+    global IMG_SIZE
+    width, height = pic.size
+    dimension_list = [0,0,0,0]
+    desired = 0
+    dim = 0
+    pos = [0,0]
+    resize_tuple = (IMG_SIZE,IMG_SIZE)
+    if width > height:
+        desired = height*IMG_SIZE/width
+        dim = int((IMG_SIZE-desired)/2)
+        pos = [1,3]
+        resize_tuple = (int(desired), IMG_SIZE)
+    elif height > width:
+        desired = width*IMG_SIZE/height
+        dim = int((IMG_SIZE-desired)/2)
+        pos = [0,2]
+        resize_tuple = (IMG_SIZE, int(desired))
+    dimension_list[pos[0]] = dim
+    if int(desired+(2*dim)) != IMG_SIZE:
+        dim = dim+1
+    dimension_list[pos[1]] = dim
+    resize_transform = transforms.Resize(resize_tuple)
+    pad_transform = transforms.Pad(tuple(dimension_list), fill=(220,220,220), padding_mode='constant')
+    #to_tensor = transforms.ToTensor()
+    transform = transforms.Compose([resize_transform, pad_transform])
+    return transform(pic)
 
 ## Pick Random Images
 
@@ -64,8 +97,8 @@ def pick_images(root, train):
     img_path_1 = os.path.join(month_path, label1)
     img_path_2 = os.path.join(month_path, label2)
     
-    img1 = Image.open(img_path_1).convert('RGB')
-    img2 = Image.open(img_path_2).convert('RGB')
+    img1 = process_img(Image.open(img_path_1).convert('RGB'))
+    img2 = process_img(Image.open(img_path_2).convert('RGB'))
     # img1 = transforms(img1)
     # img2 = transforms(img2)
     label1 = label1.split("|")[1][:-4]

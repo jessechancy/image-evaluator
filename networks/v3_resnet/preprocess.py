@@ -50,8 +50,8 @@ def process_img(pic):
     dimension_list[pos[1]] = dim
     resize_transform = transforms.Resize(resize_tuple)
     pad_transform = transforms.Pad(tuple(dimension_list), fill=(220,220,220), padding_mode='constant')
-    to_tensor = transforms.ToTensor()
-    transform = transforms.Compose([resize_transform, pad_transform, to_tensor])
+    #to_tensor = transforms.ToTensor()
+    transform = transforms.Compose([resize_transform, pad_transform])
     return transform(pic)
     
 
