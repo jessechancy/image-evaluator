@@ -23,7 +23,7 @@ import lera
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
-parser.add_argument("-l", "--learning", help="change learning rate", default=0.001)
+parser.add_argument("-l", "--learning", help="change learning rate", default=0.001) # or 0.0001
 parser.add_argument("-f", "--filepath", type=str, default="./Dataset/", help="data filepath")
 parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
 args = parser.parse_args()
@@ -129,8 +129,7 @@ if device == 'cuda':
 
 criterion = nn.CrossEntropyLoss()
 # try Adam optimizer
-optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
-
+optimizer = optim.Adam(cnn.parameters(), lr=lr)
 def pairwiseloss(output1, output2, label1, label2):
     #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
     euclid_dist = F.pairwise_distance(output1-output2,np.log(label1)-np.log(label2))
