@@ -23,7 +23,7 @@ import lera
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
-parser.add_argument("-l", "--learning", help="change learning rate", default=0.01)
+parser.add_argument("-l", "--learning", help="change learning rate", default=0.001)
 parser.add_argument("-f", "--filepath", type=str, default="./Dataset/", help="data filepath")
 parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
 args = parser.parse_args()
@@ -82,14 +82,14 @@ transform_val = transforms.Compose([
 ])
 ## Loads InstaSet
 train_set = InstaSet(DATASET_DIR, True, transform_train)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=BATCH_SIZE, 
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=BATCH_SIZE,
                                            shuffle=True, num_workers=0)
 
 val_set = InstaSet(DATASET_DIR, False, transform_val)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=BATCH_SIZE, 
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=BATCH_SIZE,
                                          shuffle=True, num_workers=0)
 
-#create a dataloader that gets one tensor based on index and the other randomly 
+#create a dataloader that gets one tensor based on index and the other randomly
 #based on chosen month and user
 
 #our data should be arranged in user/month/img[title=likes]
@@ -101,7 +101,7 @@ val_loader = torch.utils.data.DataLoader(val_set, batch_size=BATCH_SIZE,
 ## Loads CIFAR10
 # train_set = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
 # train_loader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
-# 
+#
 # val_set = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_val)
 # val_loader = torch.utils.data.DataLoader(val_set, batch_size=100, shuffle=False, num_workers=2)
 ##
@@ -128,13 +128,15 @@ if device == 'cuda':
     cudnn.benchmark = True
 
 criterion = nn.CrossEntropyLoss()
+# try Adam optimizer
 optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
 
 def pairwiseloss(output1, output2, label1, label2):
-    euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
+    #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
+    euclid_dist = F.pairwise_distance(output1-output2,np.log(label1)-np.log(label2))
     euclid_dist_pow = torch.pow(euclid_dist, 2)
     return torch.mean(euclid_dist_pow)
-    
+
     #output1/like count 1 - outpu2/like count2 + 1
 
 # Training
@@ -152,7 +154,7 @@ def train(epoch):
         output2 = net(input2).float()
         target1 = target1.float()
         target2 = target2.float()
-        
+
         ##
         if output1 > output2 and target1 > target2:
             correct = True
@@ -170,10 +172,10 @@ def train(epoch):
         # total += targets.size(0)
         # correct += predicted.eq(targets).sum().item()
         # loss.data[0]
-        
+
         total += 1
         correct_count += 1 if correct else 0
-        
+
         # print(batch_idx, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
         #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
         print("Total Loss: ", train_loss/(batch_idx+1))
@@ -181,8 +183,8 @@ def train(epoch):
         lera.log('train_loss', loss.item())
         lera.log('total_train_loss', train_loss/(batch_idx+1))
         lera.log('correct_percentage', 100. * correct_count/total)
-        
-        
+
+
 def test(epoch):
     global best_acc
     net.eval()
