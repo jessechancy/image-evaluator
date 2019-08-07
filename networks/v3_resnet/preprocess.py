@@ -16,8 +16,8 @@ from threading import Thread
 ##
 
 IMG_SIZE = 224
-#os.chdir("/Volumes/My Passport")
-DATA_DIR = "./Influencers/"
+os.chdir("/Volumes/My Passport")
+DATA_DIR = "./Data/top-100/"
 INFLUENCERS = os.listdir(DATA_DIR)
 if ".DS_Store" in INFLUENCERS:
     INFLUENCERS.remove('.DS_Store')
