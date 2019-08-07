@@ -17,6 +17,8 @@ import subprocess
 from Instaset import InstaSet
 from models.resnet import ResNet18
 
+import lera
+
 ## Parse Arguments
 
 parser = argparse.ArgumentParser()
@@ -29,7 +31,7 @@ args = parser.parse_args()
 ## File Directories
 
 DATASET_DIR = args.filepath
-
+epoch_count = 100
 ## Hyper Parameters
 
 BATCH_SIZE = 1
@@ -48,6 +50,16 @@ device = torch.device('cuda:'+str(gpu) if torch.cuda.is_available() else 'cpu')
 
 if device.type == 'cuda':
     os.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
+
+##
+
+lera.log_hyperparams({
+  'title': 'Image Evaluator',
+  'batch_size': BATCH_SIZE,
+  'epochs': epoch_count,
+  'optimizer': 'Adam',
+  'lr': learning_rate,
+  })
 
 ##
 
@@ -108,7 +120,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet18()
+net = models.resnet18(pretrained=False)
 net.fc = nn.Linear(512, 1)
 net = net.to(device)
 if device == 'cuda':
@@ -118,8 +130,11 @@ if device == 'cuda':
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9, weight_decay=5e-4)
 
-class pairwiseloss():
-    pass
+def pairwiseloss(output1, output2, label1, label2):
+    euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
+    euclid_dist_pow = torch.pow(euclid_dist, 2)
+    return torch.mean(euclid_dist_pow)
+    
     #output1/like count 1 - outpu2/like count2 + 1
 
 # Training
@@ -127,31 +142,47 @@ def train(epoch):
     print('\nEpoch: %d' % epoch)
     net.train()
     train_loss = 0
-    correct = 0
+    correct_count = 0
     total = 0
     for batch_idx, (input1, target1, input2, target2) in enumerate(train_loader):
         input1, target1, input2, target2 = input1.to(device), target1.to(device), input2.to(device), target2.to(device)
         #inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
-        print(input1.size(), input2.size())
-        output1 = net(input1)
-        output2 = net(input2)
-        print(output1.size(), output2.size())
+        output1 = net(input1).float()
+        output2 = net(input2).float()
+        target1 = target1.float()
+        target2 = target2.float()
+        
+        ##
+        if output1 > output2 and target1 > target2:
+            correct = True
+        elif output2 > output1 and target2 > target1:
+            correct = True
+        else:
+            correct = False
         #(like count1, like count2]
         ## Have to write the criterion function
-        loss = criterion(output, target)
-        print(loss, loss.item())
+        loss = pairwiseloss(output1, output2, target1, target2)
         loss.backward()
         optimizer.step()
-
         train_loss += loss.item()
-        _, predicted = outputs.max(1)
-        total += targets.size(0)
-        correct += predicted.eq(targets).sum().item()
-
-        print(batch_idx, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-            % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
-
+        # _, predicted = outputs.max(1)
+        # total += targets.size(0)
+        # correct += predicted.eq(targets).sum().item()
+        # loss.data[0]
+        
+        total += 1
+        correct_count += 1 if correct else 0
+        
+        # print(batch_idx, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+        print("Total Loss: ", train_loss/(batch_idx+1))
+        print("Correct: ", 100. * correct_count/total)
+        lera.log('train_loss', loss.item())
+        lera.log('total_train_loss', train_loss/(batch_idx+1))
+        lera.log('correct_percentage', 100. * correct_count/total)
+        
+        
 def test(epoch):
     global best_acc
     net.eval()
@@ -187,6 +218,6 @@ def test(epoch):
         best_acc = acc
 
 
-for epoch in range(0, 100):
+for epoch in range(0, epoch_count):
     train(epoch)
     test(epoch)
