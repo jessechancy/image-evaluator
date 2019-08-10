@@ -130,7 +130,7 @@ if device == 'cuda':
 
 criterion = nn.CrossEntropyLoss()
 # try Adam optimizer
-optimizer = optim.Adam(cnn.parameters(), lr=lr)
+optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 def pairwiseloss(output1, output2, label1, label2):
     #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
     euclid_dist = F.pairwise_distance(output1-output2,np.log(label1)-np.log(label2))
@@ -182,7 +182,7 @@ def train(epoch):
         print("Correct: ", 100. * correct_count/total)
         lera.log('train_loss', loss.item())
         lera.log('total_train_loss', train_loss/(batch_idx+1))
-        lera.log('correct_percentage', 100. * correct_count/total)
+        lera.log('train_acc', 100. * correct_count/total)
 
 
 def test(epoch):
@@ -192,19 +192,37 @@ def test(epoch):
     correct = 0
     total = 0
     with torch.no_grad():
-        for batch_idx, (inputs, targets) in enumerate(val_loader):
-            inputs, targets = inputs.to(device), targets.to(device)
-            outputs = net(inputs)
-            loss = criterion(outputs, targets)
+        for batch_idx, (input1, target1, input2, target2) in enumerate(val_loader):
+            input1, target1, input2, target2 = input1.to(device), target1.to(device), input2.to(device), target2.to(device)
+            output1 = net(input1).float()
+            output2 = net(input2).float()
+            target1 = target1.float()
+            target2 = target2.float()
+            loss = pairwiseloss(output1, output2, target1, target2)
 
             test_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
-
-            print(batch_idx, len(val_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
-
+            # _, predicted = outputs.max(1)
+            # total += targets.size(0)
+            # correct += predicted.eq(targets).sum().item()
+            
+            # print(batch_idx, len(val_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #     % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
+            if output1 > output2 and target1 > target2:
+                correct = True
+            elif output2 > output1 and target2 > target1:
+                correct = True
+            else:
+                correct = False
+                
+            total += 1
+            correct_count += 1 if correct else 0
+            
+            print("Total Loss: ", test_loss/(batch_idx+1))
+            print("Correct: ", 100. * correct_count/total)
+            lera.log('val_loss', loss.item())
+            lera.log('total_val_loss', test_loss/(batch_idx+1))
+            lera.log('val_acc', 100. * correct_count/total)
+            
     # Save checkpoint.
     acc = 100.*correct/total
     if acc > best_acc:

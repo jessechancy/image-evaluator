@@ -14,10 +14,28 @@ from queue import Queue, Empty
 from threading import Thread
 
 ##
+# Threaded function snippet
+
+def threaded(fn):
+  def wrap(queue, *args, **kwargs):
+    queue.put(fn(*args, **kwargs))
+
+  def call(*args, **kwargs):
+    queue = Queue()
+    job = Thread(target=wrap, args=(queue,) + args,
+                 kwargs=kwargs)
+    job.start()
+    job.join()
+    return queue
+
+  return call
+
+
+##
 
 IMG_SIZE = 224
-os.chdir("/Volumes/My Passport")
-DATA_DIR = "./Data/top-100/"
+#os.chdir("/Volumes/My Passport")
+DATA_DIR = "./top-100/"
 INFLUENCERS = os.listdir(DATA_DIR)
 if ".DS_Store" in INFLUENCERS:
     INFLUENCERS.remove('.DS_Store')
@@ -65,6 +83,7 @@ def get_processed_img():
         #                                           transforms.Lambda(lambda img: process_img(img)))
         print("influencer " + str(i) + " of " + str(len(INFLUENCERS)))
         influencer = INFLUENCERS[i]
+        @threaded
         def get_processed_img_wrapper(influencer):
             nonlocal err_count, count
             img_list = []
