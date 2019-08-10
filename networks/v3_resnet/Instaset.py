@@ -12,7 +12,7 @@ import numpy as np
 import random
 
 ##
-root = "./Dataset"
+root = "../../../Dataset"
 
 ## Import Images
 
