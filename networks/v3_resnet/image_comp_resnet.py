@@ -32,7 +32,7 @@ args = parser.parse_args()
 ## File Directories
 
 DATASET_DIR = args.filepath
-epoch_count = 100
+epoch_count = 1000
 ## Hyper Parameters
 
 BATCH_SIZE = 1
@@ -133,7 +133,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 def pairwiseloss(output1, output2, label1, label2):
     #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
-    euclid_dist = F.pairwise_distance(output1-output2,np.log(label1)-np.log(label2))
+    euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
     euclid_dist_pow = torch.pow(euclid_dist, 2)
     return torch.mean(euclid_dist_pow)
 

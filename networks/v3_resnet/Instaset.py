@@ -66,7 +66,7 @@ def process_img(pic):
 
 ## Pick Random Images
 
-picks = 150000
+picks = 2000
 
 def pick_images(root, train):
     if train == True:
