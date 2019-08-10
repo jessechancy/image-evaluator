@@ -25,7 +25,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pretrained", help="choose pretrained", action="store_true", default=False)
 parser.add_argument("-l", "--learning", help="change learning rate", default=0.0001)
 #parser.add_argument("-l", "--learning", help="change learning rate", default=0.001) # or 0.0001
-parser.add_argument("-f", "--filepath", type=str, default="./Dataset/", help="data filepath")
+parser.add_argument("-f", "--filepath", type=str, default="../../../Dataset", help="data filepath")
 parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
 args = parser.parse_args()
 
