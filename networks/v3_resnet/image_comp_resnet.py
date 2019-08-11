@@ -32,7 +32,7 @@ args = parser.parse_args()
 ## File Directories
 
 DATASET_DIR = args.filepath
-epoch_count = 1000
+epoch_count = 10
 ## Hyper Parameters
 
 BATCH_SIZE = 1
@@ -224,7 +224,7 @@ def test(epoch):
             lera.log('val_acc', 100. * correct_count/total)
             
     # Save checkpoint.
-    acc = 100.*correct/total
+    acc = 100.*correct_count/total
     if acc > best_acc:
         print('Saving..')
         state = {
