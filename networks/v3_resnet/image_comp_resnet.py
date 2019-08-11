@@ -179,7 +179,7 @@ def train(epoch):
 
         # print(batch_idx, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
         #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
-        print("Total Loss: ", train_loss/(batch_idx+1), "Correct: ", 100. * correct_count/total)
+        print("Total Loss: %.3f | Acc: %.3f" %(test_loss/(batch_idx+1), 100. * correct_count/total))
         lera.log('train_loss', loss.item())
         lera.log('total_train_loss', train_loss/(batch_idx+1))
         lera.log('train_acc', 100. * correct_count/total)
@@ -218,7 +218,7 @@ def test(epoch):
             total += 1
             correct_count += 1 if correct else 0
             
-            print("Total Loss: ", test_loss/(batch_idx+1), "Correct: ", 100. * correct_count/total)
+            print("Total Loss: %.3f | Acc: %.3f" %(test_loss/(batch_idx+1), 100. * correct_count/total))
             lera.log('val_loss', loss.item())
             lera.log('total_val_loss', test_loss/(batch_idx+1))
             lera.log('val_acc', 100. * correct_count/total)
