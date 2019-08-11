@@ -241,4 +241,4 @@ def test(epoch):
 for epoch in range(0, epoch_count):
     train(epoch)
     test(epoch)
-print("Best Accuracy:" best_acc)
+print("Best Accuracy:", best_acc)
