@@ -241,3 +241,4 @@ def test(epoch):
 for epoch in range(0, epoch_count):
     train(epoch)
     test(epoch)
+print(best_acc)
