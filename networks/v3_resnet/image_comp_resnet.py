@@ -189,7 +189,7 @@ def test(epoch):
     global best_acc
     net.eval()
     test_loss = 0
-    correct = 0
+    correct_count = 0
     total = 0
     with torch.no_grad():
         for batch_idx, (input1, target1, input2, target2) in enumerate(val_loader):
