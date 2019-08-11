@@ -36,7 +36,7 @@ epoch_count = 10
 ## Hyper Parameters
 
 BATCH_SIZE = 1
-learning_rate = int(args.learning)
+learning_rate = float(args.learning)
 gpu = args.gpu
 pretrain_model = args.pretrained
 
