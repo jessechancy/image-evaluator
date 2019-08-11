@@ -32,7 +32,7 @@ args = parser.parse_args()
 ## File Directories
 
 DATASET_DIR = args.filepath
-epoch_count = 10
+epoch_count = 1000
 ## Hyper Parameters
 
 BATCH_SIZE = 1
