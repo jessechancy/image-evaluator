@@ -66,7 +66,7 @@ def process_img(pic):
 
 ## Pick Random Images
 
-picks = 10
+picks = 100
 
 def pick_images(root, train):
     if train == True:
@@ -126,7 +126,10 @@ class InstaSet(Dataset):
         self.transforms = transforms
         
     def __len__(self):
-        return picks
+        if self.train:
+            return picks
+        else:
+            return int(picks * 0.25)
     def __getitem__(self, idx):
         img1, label1, img2, label2 =  pick_images(self.root, self.train)
         
