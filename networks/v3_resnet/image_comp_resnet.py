@@ -121,7 +121,7 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet34(pretrained=False)
+net = models.resnet18(pretrained=False)
 net.fc = nn.Linear(512, 1)
 net = net.to(device)
 if device == 'cuda':

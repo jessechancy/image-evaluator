@@ -74,29 +74,38 @@ def pick_images(root, train):
     else:
         root = root + "/val"
     users = os.listdir(root)
-    users_len = len(users)
     flagged = False
     single = set()
     while not flagged:
-        user_ind = random.randint(0, users_len-1)
-        user = users[user_ind]
+        user = random.choice(users)
         user_path = os.path.join(root, user)
         user_data = os.listdir(user_path)
-        month_ind = random.randint(0, len(user_data)-1)
-        month = user_data[month_ind]
-        month_path = os.path.join(user_path, month)
-        month_data = os.listdir(month_path)
-        month_data.remove("avg_likes.txt")
-        try:
-            img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
+        if len(user_data) < 2:
+            continue
+        else:
+            month = random.choice(user_data)
+            year = month[:-3]
+            year_data = [k for k in user_data if year in k]
+            month2 = random.choice(year_data)
+            month_path = os.path.join(user_path, month)
+            month2_path = os.path.join(user_path, month2)
+            month_data = os.listdir(month_path)
+            month_data.remove("avg_likes.txt")
+            month2_data = os.listdir(month2_path)
+            month2_data.remove("avg_likes.txt")
+            label1 = random.choice(month_data)
+            label2 = random.choice(month2_data)
             flagged = True
-        except:
-            flagged = False
-    label1, label2 = month_data[img_ind_1], month_data[img_ind_2]
+        
+        # try:
+        #     img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
+        #     flagged = True
+        # except:
+        #     flagged = False
     
     img_path_1 = os.path.join(month_path, label1)
-    img_path_2 = os.path.join(month_path, label2)
-    
+    img_path_2 = os.path.join(month2_path, label2)
+    print(img_path_1, img_path_2)
     img1 = process_img(Image.open(img_path_1).convert('RGB'))
     img2 = process_img(Image.open(img_path_2).convert('RGB'))
     # img1 = transforms(img1)
