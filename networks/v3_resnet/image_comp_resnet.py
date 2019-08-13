@@ -153,15 +153,19 @@ class PairwiseLoss(torch.nn.Module):
             print(euclid_dist_pow)
             avg = torch.mean(euclid_dist_pow)
             print(avg)
-            subtracted = torch - 0.1
+            subtracted = avg - 0.1
             print(subtracted)
             final = torch.max(subtracted, 0)
             print(final)
         else:
             euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
+            
             euclid_dist_pow = torch.pow(euclid_dist, 2)
+            
             avg = torch.mean(euclid_dist_pow)
-            subtracted = torch - 0.1
+            
+            subtracted = avg - 0.1
+            
             final = torch.max(subtracted, 0)
         self.flag += 1
         return final
