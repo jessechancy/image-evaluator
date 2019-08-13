@@ -35,7 +35,7 @@ DATASET_DIR = args.filepath
 epoch_count = 1000
 ## Hyper Parameters
 
-BATCH_SIZE = 1
+BATCH_SIZE = 30
 learning_rate = float(args.learning)
 gpu = args.gpu
 pretrain_model = args.pretrained
