@@ -120,14 +120,13 @@ print('==> Building model..')
 # net = ShuffleNetG2()
 # net = SENet18()
 # net = ShuffleNetV2(1)
-net = models.resnet18(pretrained=False)
+net = models.resnet18(pretrained=pretrain_model)
 net.fc = nn.Linear(512, 1)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
 
-criterion = nn.CrossEntropyLoss()
 # try Adam optimizer
 optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 def pairwiseloss(output1, output2, label1, label2):
@@ -136,7 +135,17 @@ def pairwiseloss(output1, output2, label1, label2):
     euclid_dist_pow = torch.pow(euclid_dist, 2)
     return torch.mean(euclid_dist_pow)
 
-    #output1/like count 1 - outpu2/like count2 + 1
+class PairwiseLoss(torch.nn.Module):
+    
+    def __init__(self):
+        super(PairwiseLoss,self).__init__()
+        
+    def forward(self,output1,output2,label1,label2):
+        euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
+        euclid_dist_pow = torch.pow(euclid_dist, 2)
+        return torch.mean(euclid_dist_pow)
+
+criterion = PairwiseLoss()
 
 # Training
 def train(epoch):
@@ -164,7 +173,7 @@ def train(epoch):
             correct = False
         #(like count1, like count2]
         ## Have to write the criterion function
-        loss = pairwiseloss(output1, output2, target1, target2)
+        loss = criterion(output1, output2, target1, target2)
         loss.backward()
         optimizer.step()
         train_loss += loss.item()
@@ -197,7 +206,7 @@ def test(epoch):
             output2 = net(input2).float()
             target1 = target1.float()
             target2 = target2.float()
-            loss = pairwiseloss(output1, output2, target1, target2)
+            loss = criterion(output1, output2, target1, target2)
 
             test_loss += loss.item()
             # _, predicted = outputs.max(1)
