@@ -110,6 +110,8 @@ def pick_images(root, train):
     img_path_2 = os.path.join(month2_path, label2)
     img1 = process_img(Image.open(img_path_1).convert('RGB'))
     img2 = process_img(Image.open(img_path_2).convert('RGB'))
+    img1.save("tmp/img1.jpg")
+    img2.save("tmp/img2.jpg")
     # img1 = transforms(img1)
     # img2 = transforms(img2)
     label1 = label1.split("|")[1][:-4]
