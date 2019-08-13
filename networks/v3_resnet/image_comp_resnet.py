@@ -139,11 +139,31 @@ class PairwiseLoss(torch.nn.Module):
     
     def __init__(self):
         super(PairwiseLoss,self).__init__()
+        self.flag = 0
         
     def forward(self,output1,output2,label1,label2):
-        euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
-        euclid_dist_pow = torch.pow(euclid_dist, 2)
-        return torch.mean(euclid_dist_pow)
+        
+        if self.flag <= 5:
+            print(output1, output2, label1, label2)
+            euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
+            print(output1-output2)
+            print(torch.log(label1)-torch.log(label2))
+            print(euclid_dist)
+            euclid_dist_pow = torch.pow(euclid_dist, 2)
+            print(euclid_dist_pow)
+            avg = torch.mean(euclid_dist_pow)
+            print(res)
+            subtracted = torch - 0.1
+            final = torch.max(subtracted, 0)
+            
+        else:
+            euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
+            euclid_dist_pow = torch.pow(euclid_dist, 2)
+            avg = torch.mean(euclid_dist_pow)
+            subtracted = torch - 0.1
+            final = torch.max(subtracted, 0)
+        self.flag += 1
+        return final
 
 criterion = PairwiseLoss()
 
@@ -218,6 +238,8 @@ def test(epoch):
             if output1 > output2 and target1 > target2:
                 correct = True
             elif output2 > output1 and target2 > target1:
+                correct = True
+            elif output1 == output2 and target1 == target2:
                 correct = True
             else:
                 correct = False
