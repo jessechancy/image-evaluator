@@ -71,7 +71,6 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 print('==> Preparing data..')
 transform_train = transforms.Compose([
     transforms.RandomCrop(224, padding=4),
-    transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
@@ -179,10 +178,9 @@ def train(epoch):
 
         # print(batch_idx, len(train_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
         #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
-        print("Total Loss: %.3f | Acc: %.3f" % (train_loss/(batch_idx+1), 100. * correct_count/total))
-        lera.log('train_loss', loss.item())
-        lera.log('total_train_loss', train_loss/(batch_idx+1))
-        lera.log('train_acc', 100. * correct_count/total)
+    print("Total Loss: %.3f | Acc: %.3f" % (train_loss/(batch_idx+1), 100. * correct_count/total))
+    lera.log('train_loss', train_loss/(batch_idx+1))
+    lera.log('train_acc', 100. * correct_count/total)
 
 
 def test(epoch):
@@ -218,10 +216,9 @@ def test(epoch):
             total += 1
             correct_count += 1 if correct else 0
             
-            print("Total Loss: %.3f | Acc: %.3f" % (test_loss/(batch_idx+1), 100. * correct_count/total))
-            lera.log('val_loss', loss.item())
-            lera.log('total_val_loss', test_loss/(batch_idx+1))
-            lera.log('val_acc', 100. * correct_count/total)
+        print("Total Loss: %.3f | Acc: %.3f" % (test_loss/(batch_idx+1), 100. * correct_count/total))
+        lera.log('val_loss', test_loss/(batch_idx+1))
+        lera.log('val_acc', 100. * correct_count/total)
             
     # Save checkpoint.
     acc = 100.*correct_count/total
