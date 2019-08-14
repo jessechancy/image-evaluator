@@ -146,6 +146,7 @@ class PairwiseLoss(torch.nn.Module):
         
         if self.flag <= 5:
             print(output1, output2, label1, label2)
+            
             euclid_dist = F.pairwise_distance(output1/output2,torch.log(label1/label2)) #change to log later
             print(output1/output2)
             print(label1/label2)
@@ -158,6 +159,10 @@ class PairwiseLoss(torch.nn.Module):
             print(subtracted)
             subtracted[subtracted < 0] = 0
             final = subtracted
+            if (output1 > output2 and label1 > label2) or (output2 > output1 and label2 > label1) or \
+            label1 == label2:
+                subtracted[:] = 0
+                final = subtracted
             print(final)
         else:
             euclid_dist = F.pairwise_distance(output1/output2,torch.log(label1/label2)) #change to log later
@@ -166,6 +171,11 @@ class PairwiseLoss(torch.nn.Module):
             subtracted = avg - 0.2
             subtracted[subtracted < 0] = 0
             final = subtracted
+            if (output1 > output2 and label1 > label2) or (output2 > output1 and label2 > label1) or \
+            label1 == label2:
+                subtracted[:] = 0
+                final = subtracted
+            print(final)
         self.flag += 1
         return final
 
