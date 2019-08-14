@@ -115,12 +115,14 @@ def pick_images(root, train):
         
         try:
             img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
+            label1 = month_data[img_ind_1]
+            label2 = month_data[img_ind_2]
             flagged = True
         except:
             flagged = False
     
-    img_path_1 = os.path.join(month_path, img_ind_1)
-    img_path_2 = os.path.join(month_path, img_ind_2)
+    img_path_1 = os.path.join(month_path, label1)
+    img_path_2 = os.path.join(month_path, label2)
     img1 = process_img(Image.open(img_path_1).convert('RGB'))
     img2 = process_img(Image.open(img_path_2).convert('RGB'))
     img1.save("tmp/img1.jpg")
