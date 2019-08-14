@@ -179,6 +179,7 @@ def train(epoch):
     train_loss = 0
     correct_count = 0
     total = 0
+    flag = 0
     for batch_idx, (input1, target1, input2, target2) in enumerate(train_loader):
         input1, target1, input2, target2 = input1.to(device), target1.to(device), input2.to(device), target2.to(device)
         #inputs, targets = inputs.to(device), targets.to(device)
@@ -205,6 +206,9 @@ def train(epoch):
             correct = False
         #(like count1, like count2]
         ## Have to write the criterion function
+        if flag <= 5:
+            print(flag, ":", output1, output2, target1, target2)
+        flag += 1
         loss = criterion(output1, output2, target1, target2)
         loss.backward()
         optimizer.step()
