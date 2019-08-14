@@ -27,6 +27,7 @@ parser.add_argument("-l", "--learning", help="change learning rate", default=0.0
 #parser.add_argument("-l", "--learning", help="change learning rate", default=0.001) # or 0.0001
 parser.add_argument("-f", "--filepath", type=str, default="../../../Dataset", help="data filepath")
 parser.add_argument("-g", "--gpu", type=int, default=0, help="gpu")
+parser.add_argument("-b", "--batchsize", type=int, default=1, help="batchsize")
 args = parser.parse_args()
 
 ## File Directories
@@ -35,7 +36,7 @@ DATASET_DIR = args.filepath
 epoch_count = 1000
 ## Hyper Parameters
 
-BATCH_SIZE = 1
+BATCH_SIZE = args.batchsize
 learning_rate = float(args.learning)
 gpu = args.gpu
 pretrain_model = args.pretrained
