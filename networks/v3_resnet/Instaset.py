@@ -77,37 +77,50 @@ def pick_images(root, train):
     flagged = False
     single = set()
     while not flagged:
-        try:
-            user = random.choice(users)
-            user_path = os.path.join(root, user)
-            user_data = os.listdir(user_path)
-            if len(user_data) < 2:
-                continue
-            else:
-                month = random.choice(user_data)
-                year = month[:-3]
-                year_data = [k for k in user_data if year in k]
-                month2 = random.choice(year_data)
-                month_path = os.path.join(user_path, month)
-                month2_path = os.path.join(user_path, month2)
-                month_data = os.listdir(month_path)
-                month_data.remove("avg_likes.txt")
-                month2_data = os.listdir(month2_path)
-                month2_data.remove("avg_likes.txt")
-                label1 = random.choice(month_data)
-                label2 = random.choice(month2_data)
-                flagged = True
-        except:
-            continue
-        
+        ## For year
         # try:
-        #     img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
-        #     flagged = True
+        #     user = random.choice(users)
+        #     user_path = os.path.join(root, user)
+        #     user_data = os.listdir(user_path)
+        #     if len(user_data) < 2:
+        #         continue
+        #     else:
+        #         month = random.choice(user_data)
+        #         year = month[:-3]
+        #         year_data = [k for k in user_data if year in k]
+        #         month2 = random.choice(year_data)
+        #         month_path = os.path.join(user_path, month)
+        #         month2_path = os.path.join(user_path, month2)
+        #         month_data = os.listdir(month_path)
+        #         month_data.remove("avg_likes.txt")
+        #         month2_data = os.listdir(month2_path)
+        #         month2_data.remove("avg_likes.txt")
+        #         label1 = random.choice(month_data)
+        #         label2 = random.choice(month2_data)
+        #         flagged = True
         # except:
-        #     flagged = False
+        #     continue
+        
+        ## For Month
+        
+        user = random.choice(users)
+        user_path = os.path.join(root, user)
+        user_data = os.listdir(user_path)
+        month = random.choice(user_data)
+        if month == "2019-07":
+            continue
+        month_path = os.path.join(user_path, month)
+        month_data = os.listdir(month_path)
+        month_data.remove("avg_likes.txt")
+        
+        try:
+            img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
+            flagged = True
+        except:
+            flagged = False
     
-    img_path_1 = os.path.join(month_path, label1)
-    img_path_2 = os.path.join(month2_path, label2)
+    img_path_1 = os.path.join(month_path, img_ind_1)
+    img_path_2 = os.path.join(month_path, img_ind_2)
     img1 = process_img(Image.open(img_path_1).convert('RGB'))
     img2 = process_img(Image.open(img_path_2).convert('RGB'))
     img1.save("tmp/img1.jpg")
