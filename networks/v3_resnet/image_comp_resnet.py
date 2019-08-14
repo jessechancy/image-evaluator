@@ -189,15 +189,15 @@ def train(epoch):
 
         ##
         if output1 > output2 and target1 > target2:
-            if epoch == 20:
+            if epoch == 5:
                 print(output1, output2, target1, target2)
             correct = True
         elif output2 > output1 and target2 > target1:
-            if epoch == 20:
+            if epoch == 5:
                 print(output1, output2, target1, target2)
             correct = True
         elif output1 == output2 and target1 == target2:
-            if epoch == 20:
+            if epoch == 5:
                 print(output1, output2, target1, target2)
             correct = True
         else:
