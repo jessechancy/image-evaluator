@@ -3,7 +3,7 @@ import os
 import face_recognition
 import torch
 import subprocess
-
+import numpy as np
 
 ## GPU Setting
 
