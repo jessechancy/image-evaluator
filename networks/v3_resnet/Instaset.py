@@ -103,26 +103,53 @@ def pick_images(root, train):
         
         ## For Month
         
+        # user = random.choice(users)
+        # user_path = os.path.join(root, user)
+        # user_data = os.listdir(user_path)
+        # month = random.choice(user_data)
+        # if month == "2019-07":
+        #     continue
+        # month_path = os.path.join(user_path, month)
+        # month_data = os.listdir(month_path)
+        # month_data.remove("avg_likes.txt")
+        # 
+        # try:
+        #     img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
+        #     label1 = month_data[img_ind_1]
+        #     label2 = month_data[img_ind_2]
+        #     flagged = True
+        # except:
+        #     flagged = False
+    
+    # img_path_1 = os.path.join(month_path, label1)
+    # img_path_2 = os.path.join(month_path, label2)
+        ## For Random
+        
         user = random.choice(users)
         user_path = os.path.join(root, user)
         user_data = os.listdir(user_path)
-        month = random.choice(user_data)
-        if month == "2019-07":
-            continue
-        month_path = os.path.join(user_path, month)
-        month_data = os.listdir(month_path)
-        month_data.remove("avg_likes.txt")
-        
+        if "2019-07" in user_data:
+            user_data.remove("2019-07")
+        month1 = random.choice(user_data)
+        month2 = random.choice(user_data)
+        month_1_path = os.path.join(user_path, month1)
+        month_2_path = os.path.join(user_path, month2)
+        month_1_data = os.listdir(month_1_path)
+        month_2_data = os.listdir(month_2_path)
+        month_1_data.remove("avg_likes.txt")
+        month_2_data.remove("avg_likes.txt")
         try:
-            img_ind_1, img_ind_2 = random.sample(range(len(month_data)), 2)
-            label1 = month_data[img_ind_1]
-            label2 = month_data[img_ind_2]
+            label1 = random.choice(month_1_data)
+            label2 = random.choice(month_2_data)
             flagged = True
         except:
             flagged = False
     
-    img_path_1 = os.path.join(month_path, label1)
-    img_path_2 = os.path.join(month_path, label2)
+    img_path_1 = os.path.join(month_1_path, label1)
+    img_path_2 = os.path.join(month_2_path, label2)
+    
+    ##
+    
     img1 = process_img(Image.open(img_path_1).convert('RGB'))
     img2 = process_img(Image.open(img_path_2).convert('RGB'))
     img1.save("tmp/img1.jpg")
