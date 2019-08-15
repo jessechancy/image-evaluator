@@ -7,7 +7,7 @@ import subprocess
 
 ## GPU Setting
 
-device = torch.device('cuda:'+str(gpu) if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:'+str(0) if torch.cuda.is_available() else 'cpu')
 
 if device.type == 'cuda':
     os.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
