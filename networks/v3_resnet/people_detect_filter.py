@@ -1,6 +1,18 @@
 from PIL import Image
 import os
 import face_recognition
+import torch
+import subprocess
+
+
+## GPU Setting
+
+device = torch.device('cuda:'+str(gpu) if torch.cuda.is_available() else 'cpu')
+
+if device.type == 'cuda':
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(np.argmax([int(x.split()[2]) for x in subprocess.Popen("nvidia-smi -q -d Memory | grep -A4 GPU | grep Free", shell=True, stdout=subprocess.PIPE).stdout.readlines()]))
+
+##
 
 root = "../../.."
 new_dataset = "./FilteredDataset/"
