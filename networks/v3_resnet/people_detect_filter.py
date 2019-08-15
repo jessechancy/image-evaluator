@@ -15,11 +15,11 @@ for influencer in os.listdir(train):
     for month in os.listdir(inf_path):
         mon_path = os.path.join(inf_path, month)
         path_m_new = os.path.join(path_i_new, month)
-        os.makedirs(path_m_new, exist_ok=True)
         for img in os.listdir(mon_path):
             if img == "avg_likes.txt":
                 continue
             else:
+                os.makedirs(path_m_new, exist_ok=True)
                 count += 1
                 print("train: ", count)
                 path_img_new = os.path.join(path_m_new, img)
@@ -42,11 +42,11 @@ for influencer in os.listdir(val):
     for month in os.listdir(inf_path):
         mon_path = os.path.join(inf_path, month)
         path_m_new = os.path.join(path_i_new, month)
-        os.makedirs(path_m_new, exist_ok=True)
         for img in os.listdir(mon_path):
             if img == "avg_likes.txt":
                 continue
             else:
+                os.makedirs(path_m_new, exist_ok=True)
                 count += 1
                 print("val: ", count)
                 path_img_new = os.path.join(path_m_new, img)
