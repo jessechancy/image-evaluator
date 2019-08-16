@@ -110,7 +110,7 @@ def pick_images(root, train):
         if month == "2019-07":
             continue
         else:
-            year, mon = month[:4], month[-2:]
+            year, mon = int(month[:4]), int(month[-2:])
             pre = mon-1
             if pre < 10:
                 pre = "0" + str(pre)
