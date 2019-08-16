@@ -130,11 +130,11 @@ if device == 'cuda':
 
 # try Adam optimizer
 optimizer = optim.Adam(net.parameters(), lr=learning_rate)
-def pairwiseloss(output1, output2, label1, label2):
-    #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
-    euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
-    euclid_dist_pow = torch.pow(euclid_dist, 2)
-    return torch.mean(euclid_dist_pow)
+# def pairwiseloss(output1, output2, label1, label2):
+#     #euclid_dist = F.pairwise_distance(output1/label1,output2/label2)
+#     euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1)-torch.log(label2))
+#     euclid_dist_pow = torch.pow(euclid_dist, 2)
+#     return torch.mean(euclid_dist_pow)
 
 class PairwiseLoss(torch.nn.Module):
     
@@ -146,7 +146,7 @@ class PairwiseLoss(torch.nn.Module):
         
         if self.flag <= 5:
             print(output1, output2, label1, label2)
-            euclid_dist = F.pairwise_distance(output1/output2,torch.log(label1/label2)) #change to log later
+            euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1/label2))+0.0001*(torch.abs(output1)+torch.abs(output2)) #change to log later
             print(output1/output2)
             print(label1/label2)
             print(euclid_dist)
@@ -164,7 +164,7 @@ class PairwiseLoss(torch.nn.Module):
                 final = subtracted
             print(final)
         else:
-            euclid_dist = F.pairwise_distance(output1/output2,torch.log(label1/label2)) #change to log later
+            euclid_dist = F.pairwise_distance(output1-output2,torch.log(label1/label2))+0.0001*(torch.abs(output1)+torch.abs(output2)) #change to log later
             # euclid_dist_pow = torch.pow(euclid_dist, 2)
             # print(euclid_dist_pow)
             # avg = torch.mean(euclid_dist)
