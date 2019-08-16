@@ -109,37 +109,8 @@ def pick_images(root, train):
         month = random.choice(user_data)
         if month == "2019-07":
             continue
-        else:
-            year, mon = int(month[:4]), int(month[-2:])
-            pre = mon-1
-            if pre < 10:
-                pre = "0" + str(pre)
-            post = mon+1
-            if post < 10:
-                post = "0" + str(post)
-            
-            pre_month = str(year) + "-" + pre
-            post_month = str(year) + "-" + post
-            if mon == 12:
-                post_month = str(year+1) + "-" + "01"
-            elif mon == 1:
-                pre_month = str(year-1) + "-" + "12"
         month_path = os.path.join(user_path, month)
-        pre_month_path = os.path.join(user_path, pre_month)
-        post_month_path = os.path.join(user_path, post_month)
         month_data = os.listdir(month_path)
-        try:
-            pre_month_data = os.listdir(pre_month_path)
-            pre_month_data.remove("avg_likes.txt")
-            month_data.extend(pre_month_data)
-        except:
-            pass
-        try: 
-            post_month_data = os.listdir(post_month_path)
-            post_month_data.remove("avg_likes.txt")
-            month_data.extend(post_month_data)
-        except:
-            pass
         month_data.remove("avg_likes.txt")
         
         try:
